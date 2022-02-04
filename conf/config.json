@@ -2,7 +2,7 @@
 	// IRC server settings.
 	"server": {
 		// WebSocket URL or path to connect to (string).
-		"url": "wss://irc.libra.chat",
+		"url": "wss://irc.libera.chat",
 		// Channel(s) to auto-join (string or array of strings).
 		"autojoin": "#yunohost",
 		// Controls how the password UI is presented to the user. Set to
