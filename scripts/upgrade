@@ -97,6 +97,48 @@ ynh_script_progression --message="Upgrading NGINX web server configuration..." -
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
+#==============================================
+# INSTALL SUTOM
+#==============================================
+ynh_script_progression --message="Building Gamja... (this will take some time and resources!)" --weight=20
+
+pushd "$final_path"
+	ynh_use_nodejs
+	ynh_exec_warn_less npm i -g npm
+	ynh_exec_warn_less npm install --production
+popd
+
+#=================================================
+# ADD A CONFIGURATION
+#=================================================
+ynh_script_progression --message="Adding a configuration file..." --time --weight=1
+
+ynh_add_config --template="../conf/config.json" --destination="$final_path/config.json"
+
+chmod 744 "$final_path/config.json"
+chown $app:www-data "$final_path/config.json"
+
+#=================================================
+#CREAT GATEWAYPATH
+#=================================================
+ynh_script_progression --message="Setting up gatheway path..." --weight=2
+
+webircgateway_path=/var/www/webircgateway
+ynh_app_setting_set --app=$app --key=webircgateway_path --value=$webircgateway_path
+mkdir -p $webircgateway_path
+
+mv ../sources/webircgateway $webircgateway_path/webircgateway
+
+chmod 755 "$webircgateway_path"
+chmod -R o-rwx "$webircgateway_path"
+chown -R $app:www-data "$webircgateway_path"
+chmod +x "$webircgateway_path/webircgateway"
+
+ynh_add_config --template="../conf/config.conf" --destination="$webircgateway_path/config.conf"
+
+chmod 755 "$webircgateway_path/config.conf"
+chown $app:www-data "$webircgateway_path/config.conf"
+
 #=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
@@ -106,61 +148,12 @@ ynh_script_progression --message="Upgrading dependencies..." --weight=5
 ynh_exec_warn_less ynh_install_nodejs --nodejs_version=$nodejs_version
 
 #=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading PHP-FPM configuration..." --time --weight=1
-
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config
-
-#=================================================
-# SPECIFIC UPGRADE
-#=================================================
-# ...
-#=================================================
-
-#=================================================
-# UPDATE A CONFIG FILE
-#=================================================
-ynh_script_progression --message="Updating a configuration file..." --time --weight=1
-
-### Same as during install
-###
-### The file will automatically be backed-up if it's found to be manually modified (because
-### ynh_add_config keeps track of the file's checksum)
-
-ynh_add_config --template="some_config_file" --destination="$final_path/some_config_file"
-
-# FIXME: this should be handled by the core in the future
-# You may need to use chmod 600 instead of 400,
-# for example if the app is expected to be able to modify its own config
-chmod 400 "$final_path/some_config_file"
-chown $app:$app "$final_path/some_config_file"
-
-### For more complex cases where you want to replace stuff using regexes,
-### you shoud rely on ynh_replace_string (which is basically a wrapper for sed)
-### When doing so, you also need to manually call ynh_store_file_checksum
-###
-### ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/some_config_file"
-### ynh_store_file_checksum --file="$final_path/some_config_file"
-
-#=================================================
 # SETUP SYSTEMD
 #=================================================
 ynh_script_progression --message="Upgrading systemd configuration..." --time --weight=1
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Upgrading logrotate configuration..." --time --weight=1
-
-# Use logrotate to manage app-specific logfile(s)
-ynh_use_logrotate --non-append
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
@@ -174,7 +167,7 @@ yunohost service add $app --description="A short description of the app" --log="
 #=================================================
 ynh_script_progression --message="Starting a systemd service..." --time --weight=1
 
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+ynh_systemd_action --service_name=$app --action="start" --log_path="systemd"
 
 #=================================================
 # UPGRADE FAIL2BAN
