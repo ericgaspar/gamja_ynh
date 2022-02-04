@@ -118,13 +118,13 @@ mv ../sources/webircgateway $webircgateway_path/webircgateway
 
 chmod 755 "$webircgateway_path"
 chmod -R o-rwx "$webircgateway_path"
-chown -R www-data:www-data "$webircgateway_path"
+chown -R $app:www-data "$webircgateway_path"
 chmod +x "$webircgateway_path/webircgateway"
 
 ynh_add_config --template="../conf/config.conf" --destination="$webircgateway_path/config.conf"
 
 chmod 755 "$webircgateway_path/config.conf"
-chown www-data:www-data "$webircgateway_path/config.conf"
+chown $app:www-data "$webircgateway_path/config.conf"
 
 #=================================================
 # SETUP SYSTEMD
