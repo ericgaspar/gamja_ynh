@@ -127,7 +127,7 @@ chmod -R o-rwx "$webircgateway_path"
 chown -R $app:www-data "$webircgateway_path"
 chmod +x "$webircgateway_path/kiwiirc"
 
-ynh_add_config --template="../sources/config.json" --destination="$webircgateway_path/config.conf"
+ynh_add_config --template="../sources/config.conf.example" --destination="$webircgateway_path/config.conf"
 
 chmod 744 "$webircgateway_path/config.conf"
 chown $app:$app "$webircgateway_path/config.conf"
