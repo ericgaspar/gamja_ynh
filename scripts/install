@@ -78,6 +78,7 @@ ynh_script_progression --message="Setting up source files..." --time --weight=1
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 ynh_setup_source --dest_dir="$final_path"
+git clone https://sr.ht/~emersion/gamja "$final_path" --quiet
 
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
@@ -107,10 +108,10 @@ popd
 #=================================================
 ynh_script_progression --message="Adding a configuration file..." --time --weight=1
 
-ynh_add_config --template="some_config_file" --destination="$final_path/some_config_file"
+ynh_add_config --template="../conf/config.json" --destination="$final_path/config.json"
 
-chmod 400 "$final_path/some_config_file"
-chown $app:$app "$final_path/some_config_file"
+chmod 744 "$final_path/config.json"
+chown $app:$app "$final_path/config.json"
 
 #=================================================
 # SETUP SYSTEMD
