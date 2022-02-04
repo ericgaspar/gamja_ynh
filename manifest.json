@@ -1,6 +1,6 @@
 {
-    "name": "Example app",
-    "id": "example",
+    "name": "Gamja",
+    "id": "gamja",
     "packaging_format": 1,
     "description": {
         "en": "Explain in *a few (10~15) words* the purpose of the app or what it actually does (it is meant to give a rough idea to users browsing a catalog of 100+ apps)",
@@ -14,7 +14,7 @@
         "demo": "https://demo.example.com",
         "admindoc": "https://yunohost.org/packaging_apps",
         "userdoc": "https://yunohost.org/apps",
-        "code": "https://some.forge.com/example/example"
+        "code": "https://sr.ht/~emersion/gamja/"
     },
     "license": "free",
     "maintainer": {
@@ -26,9 +26,7 @@
     },
     "multi_instance": true,
     "services": [
-        "nginx",
-        "php7.3-fpm",
-        "mysql"
+        "nginx"
     ],
     "arguments": {
         "install" : [
