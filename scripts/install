@@ -114,6 +114,28 @@ chmod 744 "$final_path/config.json"
 chown $app:$app "$final_path/config.json"
 
 #=================================================
+#CREAT GATEWAYPATH
+#=================================================
+ynh_script_progression --message="Setting up gatheway path..." --weight=2
+
+webircgateway_path=/var/www/webircgateway
+mkdir -p $webircgateway_path
+
+ynh_app_setting_set --app=$app --key=webircgateway_path --value=$webircgateway_path
+
+mv ../sources/* $webircgateway_path
+
+chmod 750 "$webircgateway_path"
+chmod -R o-rwx "$webircgateway_path"
+chown -R $app:www-data "$webircgateway_path"
+chmod +x "$webircgateway_path/kiwiirc"
+
+ynh_add_config --template="../sources/config.json" --destination="$webircgateway_path/config.conf"
+
+chmod 744 "$webircgateway_path/config.conf"
+chown $app:$app "$webircgateway_path/config.conf"
+
+#=================================================
 # SETUP SYSTEMD
 #=================================================
 ynh_script_progression --message="Configuring a systemd service..." --time --weight=1
