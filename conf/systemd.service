@@ -4,8 +4,8 @@ Documentation=https://github.com/kiwiirc/webircgateway
 After=network.target
 
 [Service]
-User=http
-Group=http
+User=__APP__
+Group=__APP__
 ExecStart=__WEBIRCGATEWAY_PATH__/webircgateway --config=__WEBIRCGATEWAY_PATH__/config.conf
 ExecReload=/usr/bin/kill -USR1 $MAINPID
 LimitNOFILE=1048576
