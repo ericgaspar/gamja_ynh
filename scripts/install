@@ -127,7 +127,7 @@ chmod -R o-rwx "$webircgateway_path"
 chown -R $app:www-data "$webircgateway_path"
 chmod +x "$webircgateway_path/kiwiirc"
 
-ynh_add_config --template="../sources/config.conf.example" --destination="$webircgateway_path/config.conf"
+ynh_add_config --template="../conf/config.conf" --destination="$webircgateway_path/config.conf"
 
 chmod 744 "$webircgateway_path/config.conf"
 chown $app:$app "$webircgateway_path/config.conf"
@@ -139,16 +139,6 @@ ynh_script_progression --message="Configuring a systemd service..." --time --wei
 
 # Create a dedicated systemd config
 ynh_add_systemd_config
-
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring log rotation..." --time --weight=1
-
-# Use logrotate to manage application logfile(s)
-ynh_use_logrotate
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
